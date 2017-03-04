@@ -39,7 +39,18 @@ function setup-collector {
 
 
 		# If using Splunk to forward logs, a special strategy is need to to delay it's startup
-		if (Get-Service SplunkForwarder -ErrorAction SilentlyContinue) {
+		
+		# Change TCP HTTP idle disconnect limit, this will help the collector disconnect un-needed source connection. (Set to 30 seconds)
+		Netsh.exe http add timeout timeouttype=idleconnectiontimeout value=30
+	}
+	catch {
+		Write-Host "The following commands did not work!"
+		$Error.Exception
+	}
+}
+
+function setup-splunk {
+	if (Get-Service SplunkForwarder -ErrorAction SilentlyContinue) {
 
 			# In order for the Splunk Forwarder to decode the events, the Windows Event Log service must be running. Also, if logs are not coming in to the collector, there is no need for forward them.
 			# A Splunk Forwarder config could be establish to monitor for these issue, But I optted out of this strategy
@@ -57,50 +68,72 @@ function setup-collector {
 		else {
 			Write-Host "Splunk not installed."
 		}
+}
 
-		# Change TCP HTTP idle disconnect limit, this will help the collector disconnect un-needed source connection. (Set to 30 seconds)
-		Netsh.exe http add timeout timeouttype=idleconnectiontimeout value=30
+function get-configs {
+	$savedconfig = "c:\temp\WEFconfig\"
+
+	if (!(test-path -Path $savedconfig)) {
+		mkdir $savedconfig
 	}
-	catch {
-		Write-Host "The following commands did not work!"
-		$Error.Exception
-	}
+	$config1 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/dc_machine(all_events)_lowLat.xml"
+	$config2 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/non-dc_machine(all_events)_lowLat.xml"
+	(New-Object System.Net.WebClient).DownloadFile($config1, $savedconfig)
+	(New-Object System.Net.WebClient).DownloadFile($config2, $savedconfig)
 }
 
 function load-configs {
 	cls
 	Write-Host " Checking For Subscription files..."
-	add-alldomaincontrollers
-	add-alldomaincomputers
+	try {
+		add-alldomaincontrollers
+		add-alldomaincomputers
+		}
+	catch {
+		Write-Error -Exception
+		}
 }
 
 function add-alldomaincomputers {
 	cls
 	Write-Verbose "Checking for Config file..."
 	#path check
-	$rootpath = "C:\temp"
-	if (Test-Path $rootpath\lowlat-domaincomputers.xml) {
+	$rootpath = "c:\temp\WEFconfig\"
+	if (Test-Path $rootpath+"non-dc_machine(all_events)_lowlat.xml") {
 		Write-Verbose "`nConfig file exists. Loading file."
-	}
+		try {
+			[XML]$allcompxml = Get-Content -path $rootpath+"non-dc_machine(all_events)_lowlat.xml"
+			wecutil.exe cs $allcompxml
+			}
+		catch {
+			Write-Error -Exception
+			}
+		}
 	else {
 		Write-Host "`nConfig file not found. Make sure XML config is in the $rootpath." -ForegroundColor red
 	}
-
-	[XML]$allcompxml = Get-Content -path $rootpath\lowlat-domaincomputers.xml
-
 }
 
 function add-alldomaincontrollers {
 	cls
 	Write-Verbose " Checking for Config file."
 	#path check
-	$rootpath = "C:\temp"
-	if (Test-Path $rootpath\lowlat-domaincomputers.xml) {
+	$rootpath = "c:\temp\WEFconfig\"
+	if (Test-Path $rootpath+"dc_machine(all_events)_lowlat.xml") {
 		Write-Verbose "`nConfig file exists. Loading file."
+		try{
+			[XML]$alldcxml = Get-Content -Path $rootpath+"dc_machine(all_events)_lowlat.xml"
+			wecutil.exe cs $alldcxml
+			}
+		catch {
+		Write-Error -Exception
+		}
 	}
 	else {
 		Write-Host "`nConfig file not found. Make sure XML config is im the $rootpath." -ForegroundColor red
 	}
-
-	[XML]$alldcxml = Get-Content -Path 
 }
+
+setup-collector
+get-configs
+load-configs

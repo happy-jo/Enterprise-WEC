@@ -28,3 +28,5 @@ sysmon64.exe -i -n -accepteula sysmonconfig-export.xml
 
 }
 
+get-sysmon
+install-sysmon
