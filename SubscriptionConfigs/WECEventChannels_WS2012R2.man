@@ -1,0 +1,50 @@
+<instrumentationManifest xsi:schemaLocation="http://schemas.microsoft.com/win/2004/08/events eventman.xsd" xmlns="http://schemas.microsoft.com/win/2004/08/events" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:trace="http://schemas.microsoft.com/win/2004/08/events/trace">
+	<instrumentation>
+		<events>
+			<provider name="WEC" guid="{ACE11782-5D7E-45E1-A31D-B8F862E57976}" symbol="WEC_EVENTS" resourceFileName="C:\Windows\system32\WECEventChannels.dll" messageFileName="c:\Windows\system32\WECEventChannels.dll">
+				<events>
+					<event symbol="DUMMY_EVENT" value="100" version="0" template="DUMMY_TEMPLATE" message="$(string.Custom Forwarded Events.event.100.message)">
+					</event>
+				</events>
+				<channels>
+					<importChannel name="System" chid="C1">
+					</importChannel>
+					<channel name="WEC-DomainControllers" chid="WEC-DomainControllers" symbol="WEC_DomainControllers" type="Operational" enabled="true">
+					</channel>
+					<channel name="WEC-DomainComputers" chid="WEC-DomainComputers" symbol="WEC_DomainComputers" type="Operational" enabled="true">
+					</channel>
+					<channel name="WEC-Collector-Servers" chid="WEC-Collector-Servers" symbol="WEC_Collector_Servers" type="Operational" enabled="true">
+					</channel>
+					<channel name="WEC-Exchange-Servers" chid="WEC-Exchange-Servers" symbol="WEC_Exchange_Servers" type="Operational" enabled="true">
+					</channel>
+					<channel name="WEC-Privileged-Access-Workstations" chid="WEC-Privileged-Access-Workstations" symbol="WEC_Privileged_Access_Workstations" type="Operational" enabled="true">
+					</channel>
+				</channels>
+				<templates>
+					<template tid="DUMMY_TEMPLATE">
+						<data name="Prop_UnicodeString" inType="win:UnicodeString" outType="xs:string">
+						</data>
+						<data name="PropUInt32" inType="win:UInt32" outType="xs:unsignedInt">
+						</data>
+					</template>
+				</templates>
+			</provider>
+		</events>
+	</instrumentation>
+	<localization>
+		<resources culture="en-US">
+			<stringTable>
+				<string id="level.Informational" value="Information">
+				</string>
+				<string id="channel.System" value="System">
+				</string>
+				<string id="Publisher.EventMessage" value="Prop_UnicodeString=%1;%n
+                  Prop_UInt32=%2;%n">
+				</string>
+				<string id="Custom Forwarded Events.event.100.message" value="Prop_UnicodeString=%1;%n
+                  Prop_UInt32=%2;%n">
+				</string>
+			</stringTable>
+		</resources>
+	</localization>
+</instrumentationManifest>
