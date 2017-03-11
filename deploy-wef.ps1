@@ -71,13 +71,13 @@ function setup-splunk {
 }
 
 function get-configs {
-	$savedconfig = "c:\temp\WEFconfig\"
+	$savedconfig = "c:\temp\WEFconfig\SubscriptionConfig"
 
 	if (!(test-path -Path $savedconfig)) {
 		mkdir $savedconfig
 	}
-	$config1 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/dc_machine(all_events)_lowLat.xml"
-	$config2 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/non-dc_machine(all_events)_lowLat.xml"
+	$config1 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/SubscriptionConfigs/dc_machine(all_events)_lowLat.xml"
+	$config2 = "https://github.com/happy-jo/Enterprise-WEC/blob/master/SubscriptionConfigs/non-dc_machine(all_events)_lowLat.xml"
 	(New-Object System.Net.WebClient).DownloadFile($config1, $savedconfig)
 	(New-Object System.Net.WebClient).DownloadFile($config2, $savedconfig)
 }
@@ -98,7 +98,7 @@ function add-alldomaincomputers {
 	cls
 	Write-Verbose "Checking for Config file..."
 	#path check
-	$rootpath = "c:\temp\WEFconfig\"
+	$rootpath = "c:\temp\WEFconfig\SubscriptionConfig"
 	if (Test-Path $rootpath+"non-dc_machine(all_events)_lowlat.xml") {
 		Write-Verbose "`nConfig file exists. Loading file."
 		try {
@@ -118,7 +118,7 @@ function add-alldomaincontrollers {
 	cls
 	Write-Verbose " Checking for Config file."
 	#path check
-	$rootpath = "c:\temp\WEFconfig\"
+	$rootpath = "c:\temp\WEFconfig\SubscriptionConfig"
 	if (Test-Path $rootpath+"dc_machine(all_events)_lowlat.xml") {
 		Write-Verbose "`nConfig file exists. Loading file."
 		try{
