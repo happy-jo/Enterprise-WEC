@@ -1,4 +1,4 @@
-﻿# PowerShell
+it﻿# PowerShell
 # deploy-wef.ps1
 #
 # This script was writen to setup and configure a Windows Server 2008 R2+ with act as a Windows Event Collector (WEC).
@@ -32,10 +32,10 @@ function setup-collector {
 		sc.exe CONFIG WecSvc depend= WinRM
 		
 		# Restart the Windows Event Collection service if it fails to start after 10 seconds and after 3 minutes. If it continutes to fail, reboot the computer after 10 minutes. (Counter set to reset after 60 seconds of successful start)
-		sc.exe FAILURE WecSvc reset= 60 actions = restart/5000/restart/180000/reboot/600000
+		sc.exe FAILURE WecSvc reset= 60 actions= restart/5000/restart/180000/reboot/600000
 
 		# Restart the Windows Event Log service if is fails start after 5 seconds and after 60 seconds (Counter set to reset after 60 seconds of successful start)
-		sc.exe FAILURE EventLog reset= 60 actions = restart/5000/restart/60000
+		sc.exe FAILURE EventLog reset= 60 actions= restart/5000/restart/60000
 
 
 		# If using Splunk to forward logs, a special strategy is need to to delay it's startup
