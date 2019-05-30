@@ -1,4 +1,4 @@
-it﻿# PowerShell
+# PowerShell
 # deploy-wef.ps1
 #
 # This script was writen to setup and configure a Windows Server 2008 R2+ with act as a Windows Event Collector (WEC).
